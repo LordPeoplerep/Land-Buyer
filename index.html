@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Land Buyer Calculator (₽)</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f4f4;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .container {
+      background: white;
+      padding: 30px 40px;
+      border-radius: 12px;
+      box-shadow: 0 0 12px rgba(0,0,0,0.1);
+      max-width: 400px;
+      width: 100%;
+    }
+    h2 {
+      text-align: center;
+      color: #333;
+    }
+    label {
+      font-weight: bold;
+      display: block;
+      margin-top: 15px;
+      color: #444;
+    }
+    input, select {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 16px;
+    }
+    button {
+      width: 100%;
+      padding: 12px;
+      margin-top: 20px;
+      background-color: #0077cc;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #005fa3;
+    }
+    #result {
+      text-align: center;
+      margin-top: 20px;
+      font-size: 18px;
+      color: green;
+      word-wrap: break-word;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Land Buyer Calculator (₽)</h2>
+
+    <label for="price">Price per unit area (₽):</label>
+    <input id="price" type="text" placeholder="e.g. 50,000" aria-label="Price per unit area in rubles" />
+
+    <label for="area">Total Land Area:</label>
+    <input id="area" type="text" placeholder="e.g. 2,000" aria-label="Total land area" />
+
+    <label for="unit">Unit:</label>
+    <select id="unit" aria-label="Select unit">
+      <option value="sqm">Square Meter (m²)</option>
+      <option value="sqkm">Square Kilometer (km²)</option>
+    </select>
+
+    <button onclick="calculateTotal()" aria-label="Calculate total price">Calculate Total Price</button>
+
+    <h3 id="result" aria-live="polite"></h3>
+  </div>
+
+  <script>
+    function parseNumberWithCommas(value) {
+      return parseFloat(value.replace(/,/g, ''));
+    }
+
+    function formatInputCommas(input) {
+      let val = input.value.replace(/,/g, '');
+      if (val === '') return;
+      if (!isNaN(val)) {
+        input.value = parseFloat(val).toLocaleString('en-US');
+      }
+    }
+
+    document.getElementById('price').addEventListener('input', function() {
+      formatInputCommas(this);
+    });
+
+    document.getElementById('area').addEventListener('input', function() {
+      formatInputCommas(this);
+    });
+
+    function calculateTotal() {
+      const priceInput = document.getElementById('price').value.trim();
+      const areaInput = document.getElementById('area').value.trim();
+      const unit = document.getElementById('unit').value;
+
+      const price = parseNumberWithCommas(priceInput);
+      let area = parseNumberWithCommas(areaInput);
+
+      if (isNaN(price) || isNaN(area) || price <= 0 || area <= 0) {
+        document.getElementById('result').innerText = "Please enter valid numbers.";
+        return;
+      }
+
+      if (unit === 'sqkm') {
+        area = area * 1000000;
+      }
+
+      const total = price * area;
+      const formattedTotal = total.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+      document.getElementById('result').innerText = "Total Price: ₽ " + formattedTotal;
+    }
+  </script>
+</body>
+</html>
